@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "32433283250",
+    "firebase_url": "https://infinite-runner-e4e8b.firebaseio.com",
+    "project_id": "infinite-runner-e4e8b",
+    "storage_bucket": "infinite-runner-e4e8b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32433283250:android:c2e8e06fa9d5f79b",
+        "android_client_info": {
+          "package_name": "com.infiniterunner.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32433283250-g11634pfub636jsh1353ec74d3791j25.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWBn9xgdHVKjH5Z0ArIhHPsbbmddFeDyc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

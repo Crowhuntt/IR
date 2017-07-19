@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>32433283250-88qsgka4vlisp84ik4h3ftsmejbq8nl0.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.32433283250-88qsgka4vlisp84ik4h3ftsmejbq8nl0</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCK9N8iTGS88e0qyh8fVBbBYAFfl4GuSqA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>32433283250</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.infiniterunner.ios</string>
+	<key>PROJECT_ID</key>
+	<string>infinite-runner-e4e8b</string>
+	<key>STORAGE_BUCKET</key>
+	<string>infinite-runner-e4e8b.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:32433283250:ios:3a089e10140e3c85</string>
+	<key>DATABASE_URL</key>
+	<string>https://infinite-runner-e4e8b.firebaseio.com</string>
+</dict>
+</plist>

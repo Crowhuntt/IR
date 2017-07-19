@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="firebase_database_url" translatable="false">https://infinite-runner-e4e8b.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">32433283250</string>
+  <string name="google_storage_bucket" translatable="false">infinite-runner-e4e8b.appspot.com</string>
+  <string name="google_api_key" translatable="false">AIzaSyDWBn9xgdHVKjH5Z0ArIhHPsbbmddFeDyc</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDWBn9xgdHVKjH5Z0ArIhHPsbbmddFeDyc</string>
+  <string name="google_app_id" translatable="false">1:32433283250:android:c2e8e06fa9d5f79b</string>
+  <string name="default_web_client_id" translatable="false">32433283250-g11634pfub636jsh1353ec74d3791j25.apps.googleusercontent.com</string>
+</resources>
