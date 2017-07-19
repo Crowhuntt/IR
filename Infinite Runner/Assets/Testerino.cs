@@ -72,7 +72,6 @@ public class Testerino : MonoBehaviour {
     }
     
     private void ActualizarRanking() {
-        //gitgud
         //Coger todos los valores de GetReference("score").Child(“scoreID”).OrderByChild("score") y ordenarlos descending.OrderByChild()
         //Leerlos descending en BUCLE y asignarle su nueva posición y en la posición asignar el scoreID.
         //while x.lenght => 
