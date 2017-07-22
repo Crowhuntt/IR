@@ -10,7 +10,7 @@ public class Testerino : MonoBehaviour {
     private string logedPass = "lollol1";
     private string logedUserName = "lol";
     private string uID = "ms326WHabAhrRF7N4l018BCkzb53";
-    private float scorePartida = 6;
+    private float scorePartida = 8;
     //private float scoredb;
 
     void Start()
@@ -21,7 +21,7 @@ public class Testerino : MonoBehaviour {
         //Elijo la base de datos Firebase
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://infinite-runner-e4e8b.firebaseio.com/");
 
-        //ComprobarUsuarioExiste();
+        ComprobarUsuarioExiste();
     }
 
     private void ComprobarUsuarioExiste() {
