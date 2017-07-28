@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MovimientoObstaculos : MonoBehaviour {
 
-    [SerializeField] private float m_MaxSpeed = -0.05f;                    // The fastest the player can travel in the x axis.
+    [SerializeField] private float m_MaxSpeed = -0.20f;                    // The fastest the player can travel in the x axis.
 
     // Use this for initialization
     void Start () {
