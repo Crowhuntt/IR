@@ -335,7 +335,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11492212, guid: b2d041c293fbae545b7c9c1959a3b128, type: 2}
       propertyPath: m_MaxSpeed
-      value: -0.2
+      value: -0.05
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b2d041c293fbae545b7c9c1959a3b128, type: 2}
@@ -830,7 +830,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -21.4, y: -33}
+  m_AnchoredPosition: {x: -21.400024, y: -33}
   m_SizeDelta: {x: 350.1, y: 40.6}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &863666387
@@ -1006,7 +1006,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -21.4, y: -97}
+  m_AnchoredPosition: {x: -21.400024, y: -97}
   m_SizeDelta: {x: 350.1, y: 40.6}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1194981110

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 21268122}
   - component: {fileID: 6184954}
   m_Layer: 0
-  m_Name: "PlatformaPequen\u0303a"
+  m_Name: "PlatformaPeque\xF1a"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

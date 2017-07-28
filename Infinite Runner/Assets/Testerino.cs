@@ -10,7 +10,7 @@ public class Testerino : MonoBehaviour {
     private string logedPass = "lollol1";
     private string logedUserName = "lol";
     private string uID = "ms326WHabAhrRF7N4l018BCkzb53";
-    private float scorePartida = 8;
+    private float scorePartida = 9;
     //private float scoredb;
 
     void Start()
