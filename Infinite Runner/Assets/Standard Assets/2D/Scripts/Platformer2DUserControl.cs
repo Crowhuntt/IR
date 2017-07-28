@@ -22,21 +22,21 @@ namespace UnityStandardAssets._2D
             if (!m_Jump)
             {
                 // Read the jump input in Update so button presses aren't missed.
-                m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
-//				int nbTouches = Input.touchCount;
-//
-//				if(nbTouches > 0)
-//				{
-//					print(nbTouches + " touch(es) detected");
-//
-//					for (int i = 0; i < nbTouches; i++)
-//					{
-//						Touch touch = Input.GetTouch(i);
-//						m_Jump = true;
-//						//print("Touch index " + touch.fingerId + " detected at position " + touch.position);
-//					}
-//				}
-				//m_Jump = Input.GetTouch;
+                //m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
+				int nbTouches = Input.touchCount;
+
+				if(nbTouches > 0)
+				{
+					print(nbTouches + " touch(es) detected");
+
+					for (int i = 0; i < nbTouches; i++)
+					{
+						Touch touch = Input.GetTouch(i);
+						m_Jump = true;
+						//print("Touch index " + touch.fingerId + " detected at position " + touch.position);
+					}
+				}
+//				m_Jump = Input.GetTouch;
             }
         }
 
