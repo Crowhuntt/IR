@@ -6,22 +6,27 @@ using Firebase.Database;
 using Firebase.Unity.Editor;
 
 public class Testerino : MonoBehaviour {
-    private string logedUserEmail = "lol@lol.com";
-    private string logedPass = "lollol1";
-    private string logedUserName = "lol";
-    private string uID = "ms326WHabAhrRF7N4l018BCkzb53";
-    private float scorePartida = 9;
+    private string logedUserEmail = "lol4@lol.com";
+    private string logedPass = "lollol4";
+    private string logedUserName = "lol4";
+    //private string uID = "ms326WHabAhrRF7N4l018BCkzb53";
+    private string uID;
+    private float scorePartida = 101;
     //private float scoredb;
 
     void Start()
     {
-        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
-        //CreateFuckingUser(auth);
-
         //Elijo la base de datos Firebase
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://infinite-runner-e4e8b.firebaseio.com/");
 
-        ComprobarUsuarioExiste();
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        auth.SignOut();
+        //CrearUsuario(auth);
+        //IniciarSesion(auth);
+        //GetUserInfo(auth);
+        InsertarUsuarioBBDD(auth);
+
+        //ComprobarUsuarioExiste();
     }
 
     private void ComprobarUsuarioExiste() {
@@ -71,6 +76,7 @@ public class Testerino : MonoBehaviour {
         ActualizarRanking();
     }
     
+    //ACTUALIZA EL RANKING
     private void ActualizarRanking() {
         //Coger todos los valores de GetReference("score").Child(“scoreID”).OrderByChild("score") y ordenarlos descending.OrderByChild()
         //Leerlos descending en BUCLE y asignarle su nueva posición y en la posición asignar el scoreID.
@@ -81,12 +87,127 @@ public class Testerino : MonoBehaviour {
         //end bucle.
     }
 
-    private void CreateFuckingUser(FirebaseAuth auth){
+    //CREACION DE USUARIO EN AUTH
+    private void CrearUsuario(FirebaseAuth auth){
         auth.CreateUserWithEmailAndPasswordAsync(logedUserEmail, logedPass).ContinueWith(task =>
          {
-         
-            FirebaseUser kektusUser = task.Result;
-             auth.SignOut();
+             if (task.IsCanceled)
+             {
+                 Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
+                 return;
+             }
+             if (task.IsFaulted)
+             {
+                 Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                 return;
+             }
+             if (task.IsCompleted) {
+                 //Debug.Log("CREADOOOOO");
+                 FirebaseUser newUser = task.Result;
+                 Debug.LogFormat("Firebase user created successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
+
+             }
          });
     }
+
+    //INSERTAR USUARIO EN LA BASE DE DATOS DESPUES DE CREARLO EN AUTH
+    private void InsertarUsuarioBBDD(FirebaseAuth auth) {
+        //FirebaseUser user = auth.CurrentUser;
+        //if (user != null)
+        //{
+            //No usamos DisplayName de momento
+            //string name = user.DisplayName;
+            string name = "Sin nombre";
+            //Recoge el email del usuario logueado
+            //string email = user.Email;
+            string email = "a@a.com";
+            //Recoge el uID del usuario logueado
+            //uID = user.UserId;
+            uID = "ABCDEFG";
+
+            WriteNewUser(uID, name, email);
+            //ComprobarUsuarioExiste();
+        //}
+        //else
+        //{
+        //    Debug.Log("Usuario no existe o no logueado");
+        //}
+    }
+
+    private void WriteNewUser(string uID, string name, string email)
+    {
+        DatabaseReference users = FirebaseDatabase.DefaultInstance.GetReference("users");
+        DatabaseReference scores = FirebaseDatabase.DefaultInstance.GetReference("scores");
+        DatabaseReference position = FirebaseDatabase.DefaultInstance.GetReference("position");
+        float count;
+
+        //USERS
+        //Genero un scoreID unique
+        string scoreID = scores.Push().Key;
+        //Añado el usuario a la BBDD        
+        users.Child(uID).Child("name").SetValueAsync(name);
+        users.Child(uID).Child("email").SetValueAsync(email);
+        users.Child(uID).Child("scoreID").SetValueAsync(scoreID);
+
+        //POSITION
+        //COUNT CUANTAS POSICIONES HAY PARA ASIGNARLE LA ULTIMA A LOS NUEVOS USUARIOS CREADOS
+        position.GetValueAsync().ContinueWith(task2 => {
+            if (task2.IsFaulted) {
+                // Handle the error...
+            }
+            else if (task2.IsCompleted) {
+                DataSnapshot snapshot = task2.Result;
+                //Cuento cuantos hijos hay (numero de posiciones totales) y añado una, que sera la que queremos crear
+                count = float.Parse(snapshot.ChildrenCount.ToString()) + 1;
+                //Añadimos a la BBDD la ultima posicion con el scoreID del usuario
+                position.Child(count.ToString()).Child("scoreID").SetValueAsync(scoreID);
+
+                //SCORES
+                scores.Child(scoreID).Child("date").SetValueAsync(System.DateTime.Now.ToString("dd/MM/yyyy"));
+                scores.Child(scoreID).Child("position").SetValueAsync(count.ToString());
+                scores.Child(scoreID).Child("score").SetValueAsync("0");
+                scores.Child(scoreID).Child("userID").SetValueAsync(uID);
+            }
+        });  
+    }
+
+
+    //INICIAR SESION
+    private void IniciarSesion(FirebaseAuth auth) {
+        auth.SignInWithEmailAndPasswordAsync(logedUserEmail, logedPass).ContinueWith(task => {
+            if (task.IsCanceled) {
+                Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+                return;
+            }
+            if (task.IsFaulted) {
+                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                return;
+            }
+            if (task.IsCompleted)  {
+                //Debug.Log("LOGUEADOOOO");
+                FirebaseUser newUser = task.Result;
+                //Debug.LogFormat("User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
+                GetUserInfo(auth);
+            }
+        });
+    }
+
+    //De momento no necesito para nada esta function
+    private void GetUserInfo(FirebaseAuth auth) {
+        FirebaseUser user = auth.CurrentUser;
+        if (user != null) {
+            //No usamos DisplayName de momento
+            string name = user.DisplayName;
+            //Recoge el email del usuario logueado
+            string email = user.Email;
+            //Recoge el uID del usuario logueado
+            uID = user.UserId;
+
+            //ComprobarUsuarioExiste();
+        }
+        else {
+            Debug.Log("Usuario no existe o no logueado");
+        }
+    }
+
 }

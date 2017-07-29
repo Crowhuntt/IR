@@ -142,7 +142,7 @@ PlayerSettings:
   resolutionScalingMode: 0
   applicationIdentifier:
     Android: com.infiniterunner.android
-    Standalone: com.infiniterunner.ios
+    Standalone: com.infiniterunner.android
     Tizen: com.infiniterunner.android
     iOS: com.infiniterunner.ios
     tvOS: com.infiniterunner.android
@@ -546,6 +546,7 @@ PlayerSettings:
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 0
   apiCompatibilityLevelPerPlatform:
+    Android: 1
     Standalone: 1
     iOS: 1
   m_RenderingPath: 1
