@@ -6,12 +6,12 @@ using Firebase.Database;
 using Firebase.Unity.Editor;
 
 public class Testerino : MonoBehaviour {
-    private string logedUserEmail = "lol4@lol.com";
-    private string logedPass = "lollol4";
-    private string logedUserName = "lol4";
-    //private string uID = "ms326WHabAhrRF7N4l018BCkzb53";
-    private string uID;
-    private float scorePartida = 101;
+    private string logedUserEmail = "lol5@lol.com";
+    private string logedPass = "lollol5";
+    private string logedUserName = "lol5";
+    private string uID = "szH9wgf7BjT3q0PovExZc5c0Wo33";
+    //private string uID;
+    private float scorePartida = 10;
     //private float scoredb;
 
     void Start()
@@ -21,25 +21,50 @@ public class Testerino : MonoBehaviour {
 
         FirebaseAuth auth = FirebaseAuth.DefaultInstance;
         auth.SignOut();
+
+        ActualizarRanking();
+        //GetInfoUsuario(auth);
+
         //CrearUsuario(auth);
         //IniciarSesion(auth);
         //GetUserInfo(auth);
-        InsertarUsuarioBBDD(auth);
+        //InsertarUsuarioBBDD(uID, logedUserName, logedUserEmail);
 
         //ComprobarUsuarioExiste();
     }
 
-    private void ComprobarUsuarioExiste() {
+    //RECOGER LA INFO DEL USUARIO LOGUEADO PARA DESPUES COMPROBAR SI EXISTE EN LA BBDD
+    private void GetUserInfo(FirebaseAuth auth)
+    {
+        FirebaseUser user = auth.CurrentUser;
+        if (user != null) {
+            //No usamos DisplayName de momento
+            string name = user.DisplayName;
+            //Recoge el email del usuario logueado
+            string email = user.Email;
+            //Recoge el uID del usuario logueado
+            uID = user.UserId;
+
+            ComprobarUsuarioExiste(uID);
+        }
+        else {
+            Debug.Log("Usuario no existe o no logueado");
+        }
+    }
+
+    //COMPROBAR SI EL USUARIO EXISTE EN LA BASE DE DATOS
+    private void ComprobarUsuarioExiste(string uID) {
         DatabaseReference users = FirebaseDatabase.DefaultInstance.GetReference("users");
-        users.GetValueAsync().ContinueWith(task => {
+        users.Child(uID).GetValueAsync().ContinueWith(task => {
             if (task.IsFaulted) {
-                // Handle the error...
+                //Algo he hecho mal cuando se ha dado de alta el usuario, debería existir siempre 
             }
             else if (task.IsCompleted) {
                 DataSnapshot snapshotUsers = task.Result;
+                ComprobarPuntuacionMaxima(snapshotUsers.Child("scoreID").Value.ToString());
                 //Mirar si el usuario ya existe en la base de datos
                 if (snapshotUsers.HasChild(uID)) {
-                    ComprobarPuntuacionMaxima(snapshotUsers.Child(uID).Child("scoreID").Value.ToString());
+                    //ComprobarPuntuacionMaxima(snapshotUsers.Child(uID).Child("scoreID").Value.ToString());
                 }
                 else {
                     //Algo he hecho mal cuando se ha dado de alta el usuario, debería existir siempre 
@@ -48,6 +73,7 @@ public class Testerino : MonoBehaviour {
         });
     }
 
+    //COMPROBAR SI LA PUNTUACIÓN OBTENIDA ES LA MAYOR DEL USUARIO LOGUEADO
     private void ComprobarPuntuacionMaxima(string scoreID) {
         DatabaseReference scores = FirebaseDatabase.DefaultInstance.GetReference("scores");
         //float scoreBBDD;
@@ -72,19 +98,44 @@ public class Testerino : MonoBehaviour {
         DatabaseReference scores = FirebaseDatabase.DefaultInstance.GetReference("scores");
         scores.Child(scoreID).Child("score").SetValueAsync(scorePartida);
         scores.Child(scoreID).Child("date").SetValueAsync(System.DateTime.Now.ToString("dd/MM/yyyy"));
-        //LLAMAR A FUNCION PARA ACTUALIZAR EL RANKING "position"
+        //LLAMAR A FUNCION PARA ACTUALIZAR EL RANKING
         ActualizarRanking();
     }
     
     //ACTUALIZA EL RANKING
     private void ActualizarRanking() {
-        //Coger todos los valores de GetReference("score").Child(“scoreID”).OrderByChild("score") y ordenarlos descending.OrderByChild()
-        //Leerlos descending en BUCLE y asignarle su nueva posición y en la posición asignar el scoreID.
-        //while x.lenght => 
-        //    snapshotScoreID.Child(“pos”).Value = x
-        //    var scoreID = snapshotScoreID.Value; ?
-	    //    snapshotPosition.Child(x).Child(“scoreID”).SetValueAsync(scoreID);
-        //end bucle.
+        DatabaseReference users = FirebaseDatabase.DefaultInstance.GetReference("users");
+        DatabaseReference scores = FirebaseDatabase.DefaultInstance.GetReference("scores");
+        DatabaseReference position = FirebaseDatabase.DefaultInstance.GetReference("position");
+        float contadorPosicion = 0;
+
+        //Coger todos los "score" y los ordeno ASCENDING (es lo unico que deja firebase)
+        //TRUCO: Las puntuaciones las guardo en negativo, por lo que saldran primero los de mejor puntuacion
+        scores.OrderByChild("score").GetValueAsync().ContinueWith(task => {
+            //Si quisiese coger solo los X primeros utilizo scores.OrderByChild("score").LimitToFirst(10).GetValueAsync()...
+            if (task.IsFaulted) {
+                // Handle the error...
+            }
+            else if (task.IsCompleted) {
+                //Este diccionario "snapshot" es "scores" y contiene todos los scoreID
+                DataSnapshot snapshot = task.Result;
+                //Este diccionario "snapshotScoreID" contiene todos los datos de cada scoreID
+                foreach (DataSnapshot snapshotScoreID in snapshot.Children)
+                {                                   
+                    //Value del score (Puntuacion) INVERTIDO a positivo
+                    float puntuacion = - float.Parse(snapshotScoreID.Child("score").Value.ToString());
+                    //Debug.Log(puntuacion);
+
+                    //HACER MODIFICACIONES SOBRE BBDD
+                    contadorPosicion = contadorPosicion + 1;
+                    //Cojo el scoreID del registro actual
+                    string scoreID = snapshotScoreID.Key;
+                    //Modifico registros en BBDD
+                    position.Child(contadorPosicion.ToString()).Child("scoreID").SetValueAsync(scoreID);
+                    scores.Child(scoreID).Child("position").SetValueAsync(contadorPosicion.ToString());
+                }
+            }
+        });
     }
 
     //CREACION DE USUARIO EN AUTH
@@ -105,27 +156,26 @@ public class Testerino : MonoBehaviour {
                  //Debug.Log("CREADOOOOO");
                  FirebaseUser newUser = task.Result;
                  Debug.LogFormat("Firebase user created successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
-
              }
          });
     }
 
-    //INSERTAR USUARIO EN LA BASE DE DATOS DESPUES DE CREARLO EN AUTH
-    private void InsertarUsuarioBBDD(FirebaseAuth auth) {
+    //RECOGER LA INFORMACION DEL USUARIO - NO ESTA EN USO DE MOMENTO!!!!!!!
+    private void GetInfoUsuario(FirebaseAuth auth) {
         //FirebaseUser user = auth.CurrentUser;
         //if (user != null)
         //{
             //No usamos DisplayName de momento
             //string name = user.DisplayName;
-            string name = "Sin nombre";
+            string name = "lol5";
             //Recoge el email del usuario logueado
             //string email = user.Email;
-            string email = "a@a.com";
+            string email = "lol5@lol.com";
             //Recoge el uID del usuario logueado
             //uID = user.UserId;
-            uID = "ABCDEFG";
+            uID = "szH9wgf7BjT3q0PovExZc5c0Wo33";
 
-            WriteNewUser(uID, name, email);
+        InsertarUsuarioBBDD(uID, name, email);
             //ComprobarUsuarioExiste();
         //}
         //else
@@ -134,7 +184,8 @@ public class Testerino : MonoBehaviour {
         //}
     }
 
-    private void WriteNewUser(string uID, string name, string email)
+    //INSERTAR NUEVO USUARIO A LA BASE DE DATOS
+    private void InsertarUsuarioBBDD(string uID, string name, string email)
     {
         DatabaseReference users = FirebaseDatabase.DefaultInstance.GetReference("users");
         DatabaseReference scores = FirebaseDatabase.DefaultInstance.GetReference("scores");
@@ -165,14 +216,14 @@ public class Testerino : MonoBehaviour {
                 //SCORES
                 scores.Child(scoreID).Child("date").SetValueAsync(System.DateTime.Now.ToString("dd/MM/yyyy"));
                 scores.Child(scoreID).Child("position").SetValueAsync(count.ToString());
-                scores.Child(scoreID).Child("score").SetValueAsync("0");
+                scores.Child(scoreID).Child("score").SetValueAsync(0);
                 scores.Child(scoreID).Child("userID").SetValueAsync(uID);
             }
         });  
     }
 
 
-    //INICIAR SESION
+    //INICIAR SESION - No parece funcionar desde PC?
     private void IniciarSesion(FirebaseAuth auth) {
         auth.SignInWithEmailAndPasswordAsync(logedUserEmail, logedPass).ContinueWith(task => {
             if (task.IsCanceled) {
@@ -187,27 +238,13 @@ public class Testerino : MonoBehaviour {
                 //Debug.Log("LOGUEADOOOO");
                 FirebaseUser newUser = task.Result;
                 //Debug.LogFormat("User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
-                GetUserInfo(auth);
+
+                //GetUserInfo(auth);
+                //InsertarUsuarioBBDD(uID, logedUserName, logedUserEmail);
             }
         });
     }
 
-    //De momento no necesito para nada esta function
-    private void GetUserInfo(FirebaseAuth auth) {
-        FirebaseUser user = auth.CurrentUser;
-        if (user != null) {
-            //No usamos DisplayName de momento
-            string name = user.DisplayName;
-            //Recoge el email del usuario logueado
-            string email = user.Email;
-            //Recoge el uID del usuario logueado
-            uID = user.UserId;
-
-            //ComprobarUsuarioExiste();
-        }
-        else {
-            Debug.Log("Usuario no existe o no logueado");
-        }
-    }
+    
 
 }
